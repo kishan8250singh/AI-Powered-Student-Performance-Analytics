@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,19 +32,31 @@ public class StudentService {
         StudentUser student = StudentMapper.toEntity(dto);
         studentRepository.save(student);
         log.info("Creating student: {}", student.getUsername());
-//        if (student.getEmail() != null && !student.getEmail().isBlank()) {
-//            String subject = "Welcome to Student Management System";
-//            String body = "Hi " + student.getUsername() + ",\n\nYour record has been created successfully.\n\nRegards,\nAdmin";
-//            emailService.sendSimpleMail(student.getEmail(), subject, body);
-//        }
+        if (student.getEmail() != null && !student.getEmail().isBlank()) {
+            String subject = "Welcome to Student Management System";
+            String body = "Hi " + student.getUsername() + ",\n\nYour record has been created successfully.\n\nRegards,\nAdmin";
+            emailService.sendSimpleMail(student.getEmail(), subject, body);
+        }
 
         return StudentMapper.toDto(student);
     }
 
     public List<StudentDto> getAllStudents() {
-        return studentRepository.findAll().stream()
-                .map(StudentMapper::toDto)
-                .collect(Collectors.toList());
+        log.info("Fetching all students");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).anyMatch(role -> role.equals("ROLE_ADMIN"));
+        List<StudentUser> students = studentRepository.findAll();
+
+        // Map to DTO
+        return students.stream().map(student -> {
+            StudentDto dto = StudentMapper.toDto(student);
+
+            // 🧩 Hide password for normal users
+            if (!isAdmin) {
+                dto.setPassword(null);
+            }
+            return dto;
+        }).collect(Collectors.toList());
     }
     public Page<StudentDto> getStudentsPaged(int page, int size) {
         log.info("Fetching students with pagination: page={}, size={}", page, size);
@@ -78,7 +93,20 @@ public class StudentService {
     public StudentDto getStudentById(Long id) {
         StudentUser student = studentRepository.findById(id)
                              .orElseThrow(() -> new RuntimeException("Student not found with id " + id));
-        return StudentMapper.toDto(student);
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        StudentDto dto = StudentMapper.toDto(student);
+        if (!isAdmin) dto.setPassword(null);
+
+        return dto;
+
     }
 
+    public void deleteAllStudents() {
+        log.info("Deleting all students");
+        studentRepository.deleteAll();
+    }
 }

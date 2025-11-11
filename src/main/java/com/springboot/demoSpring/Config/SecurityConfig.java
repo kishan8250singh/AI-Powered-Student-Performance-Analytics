@@ -1,9 +1,10 @@
-package com.springboot.demoSpring.config;
+package com.springboot.demoSpring.Config;
+
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -17,6 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity // to enable method-level security annotations or @ PreAuthorize
 public class SecurityConfig {
 
     @Bean
@@ -28,7 +30,7 @@ public class SecurityConfig {
                 .build();
 
         UserDetails admin = User
-                .withUsername("Admin")
+                .withUsername("ADMIN")
                 .password(passwordEncoder().encode("admin5822"))
                 .roles("ADMIN")
                 .build();
@@ -43,14 +45,14 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers(HttpMethod.GET, "/api/student**").permitAll();
-                    auth.requestMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN");
-                    auth.requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN");
-                    auth.anyRequest().authenticated();
-                })
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/student/**").permitAll()  // ✅ allow all student endpoints
+                        .anyRequest().authenticated()
+                )
                 .httpBasic(Customizer.withDefaults());
         return http.build();
     }
 }
+

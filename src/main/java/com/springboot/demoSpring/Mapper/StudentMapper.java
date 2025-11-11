@@ -9,12 +9,17 @@ public class StudentMapper {
         StudentUser user = new StudentUser();
         user.setUsername(dto.getUsername());
         user.setEmail(dto.getEmail());
+        user.setPassword(dto.getPassword());
+        user.setRole(dto.getRole());
         return user;
     }
 
     public static StudentDto toDto(StudentUser user) {
         return new StudentDto(
                 user.getUsername(),
-                user.getEmail());
+                user.getEmail(),
+                user.getRole(),
+                user.getPassword());
+
     }
 }
