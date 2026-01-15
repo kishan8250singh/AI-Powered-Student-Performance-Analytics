@@ -1,22 +1,21 @@
-📚 Student Management REST API
+📚 AI-Powered-Student-Performance-Analytics
 
-A Spring Boot REST API for managing students with role-based access (ADMIN/USER), secure password encryption, and automated email notifications.
+This project is a Spring Boot–based backend system that analyzes student academic performance using AI-generated insights.
+Instead of exposing AI directly, the system integrates AI within custom REST APIs, ensuring better control, security, and stability.
 
 🧠 Tech Stack
 
-Java 17+
+Java, Spring Boot
 
-Spring Boot
+Spring AI (ChatClient)
 
-Spring Security
-
-MySQL Database
+MySQL, Spring Data JPA
 
 Lombok
 
-Java Mail Sender
+REST APIs
 
-Postman (API Testing)
+Postman
 
 ⚙️ Features
 
@@ -26,41 +25,52 @@ Postman (API Testing)
 
 📧 Email Notifications — Sent automatically email on create/update/delete
 
-🧾 DTO & Mapper pattern for clean architecture
-
 🚫 Error Handling & Logging with Slf4j
 
-Test APIs using Postman:
+Features after integrating AI : 
 
-GET /api/student → View all students
+AI-driven analysis of student performance based on attendance and marks.
 
-POST /api/student → Create new student
+Dynamic prompt generation using real student data.
 
-DELETE /api/student/{id} → Delete student
+Structured JSON responses including performance summary, weak areas, improvement suggestions, and career recommendations.
 
-GET /api/student/{id} → Get student by ID
+Graceful fallback handling when AI services are unavailable.
 
+Clean layered architecture (Controller–Service–Repository).
 
-📧 Email Notification Example — When a student is added:
+⚠️ Challenges Faced
 
-Subject: Welcome to Student Management System
-Hi [username],
-Your record has been created successfully.
-Regards,
-Admin
+AI API quota limitations and downtime.
 
-🧩 API JSON Example (POST)
-{
+Prompt type mismatch issues in Spring AI.
 
-"username": "Username,"
+Handling inconsistent AI responses safely.
 
-"email": "abc@gmail.com,"
+✅ Solution Approach
 
-"password": "1234,"
+Used PromptTemplate → Prompt for correct Spring AI integration.
 
-"role": "USER"
+Implemented try–catch fallback logic to avoid API crashes.
 
-}
+Used DTOs with Lombok Builder pattern for clean response handling.
+
+🚀 Future Enhancements
+
+Frontend integration (React/Angular).
+
+Support for multiple AI providers.
+
+▶️ How to Run
+
+Clone the repository
+
+Configure database and AI API key
+
+Run the Spring Boot application
+
+Test APIs using Postman
+
 
 👨‍💻 Author
 
