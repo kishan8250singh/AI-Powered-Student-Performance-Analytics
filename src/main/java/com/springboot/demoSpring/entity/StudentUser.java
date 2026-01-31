@@ -18,7 +18,6 @@ public class StudentUser {
 
     // @Column(unique = false)
     private String username;
-
     private String email;
     private int attendance ;
     @ElementCollection
@@ -33,6 +32,5 @@ public class StudentUser {
     // optional: password, role
     private String password;
     private String role; // e.g. "ROLE_USER", "ROLE_ADMIN"
-
 
 }

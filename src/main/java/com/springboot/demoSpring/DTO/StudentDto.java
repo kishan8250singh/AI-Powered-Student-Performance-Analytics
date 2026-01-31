@@ -13,9 +13,9 @@ import java.util.Map;
 public class StudentDto {
 
 
+
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;  // 👈 visible only during POST/PUT, hidden in GET
-
 
     private String username;
     private String email;

@@ -51,7 +51,7 @@ public class StudentService {
         return students.stream().map(student -> {
             StudentDto dto = StudentMapper.toDto(student);
 
-            // 🧩 Hide password for normal users
+            //  Hide password for normal users
             if (!isAdmin) {
                 dto.setPassword(null);
             }

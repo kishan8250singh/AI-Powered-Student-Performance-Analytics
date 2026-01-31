@@ -17,13 +17,13 @@ public class StudentMapper {
     }
 
     public static StudentDto toDto(StudentUser user) {
-        return new StudentDto(
-                user.getUsername(),
-                user.getEmail(),
-                user.getRole(),
-                user.getPassword(),
-                user.getAttendance(),
-                user.getMarks());
-
+        StudentDto dto = new StudentDto();
+        dto.setUsername(user.getUsername());
+        dto.setEmail(user.getEmail());
+        dto.setRole(user.getRole());
+        dto.setPassword(user.getPassword());
+        dto.setAttendance(user.getAttendance());
+        dto.setMarks(user.getMarks());
+        return dto;
     }
 }
